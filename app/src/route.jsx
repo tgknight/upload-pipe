@@ -8,6 +8,7 @@ import Uploader from './uploader'
 
 export default (
   <Route path="/">
-    <IndexRoute component={Uploader} />
+    <IndexRoute component={Main}/>
+    <Route path="upload" component={Uploader}/>
   </Route>
 )

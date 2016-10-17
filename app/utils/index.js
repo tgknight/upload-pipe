@@ -11,7 +11,10 @@ export function parseJSON(response) {
       statusText: response.statusText,
       body,
     }))
-    .catch(err => response)
+    .catch(err => {
+      console.log(err)
+      return response
+    })
 }
 
 export function checkHttpStatus(response) {
@@ -30,7 +33,7 @@ export function call(url, method, data) {
   return fetch(serverUrl, {
     method: method,
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
