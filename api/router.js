@@ -8,6 +8,7 @@ const google = new Google({
   projectId: 'siwat-project',
   bucketName: 'pocket'
 })
+const entryPoint = 'pipe-test'
 
 router.get('/', function* () {
   this.status = 401
@@ -25,7 +26,7 @@ router.get('/api/v1/', function* () {
 
 router.post('/api/v1/storages/init', function* () {
   const { name , directory } = yield parse.json(this)
-  google.initUploadStram('pipe-test' + directory + name, {
+  google.initUploadStram(entryPoint + directory + name, {
     metadata: { metadata: { originalFilename: name }}
   })
   this.status = 200
@@ -51,6 +52,16 @@ router.post('/api/v1/storages/part', function* () {
 router.post('/api/v1/storages/end', function* () {
   const { name, directory } = yield parse.json(this)
   google.endUploadStream()
+  this.status = 200
+  this.body = {}
+})
+
+router.post('/api/v1/storages/cancel', function* () {
+  const { name, directory } = yield parse.json(this)
+  google.endUploadStream()
+  let exist = false
+  while (!(exist = yield google.existFile(entryPoint + directory + name))) {}
+  yield google.deleteFile(entryPoint + directory + name)
   this.status = 200
   this.body = {}
 })

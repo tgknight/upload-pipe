@@ -26,6 +26,21 @@ class Google {
   endUploadStream() {
     this.uploadStream.end()
   }
+
+  existFile(filePath) {
+    const file = this.storage.bucket(this.config.bucketName).file(filePath)
+    return file.exists()
+  }
+
+  getFile(filePath) {
+    const file = this.storage.bucket(this.config.bucketName).file(filePath)
+    return file.get()
+  }
+
+  deleteFile(filePath) {
+    const file = this.storage.bucket(this.config.bucketName).file(filePath)
+    return file.delete()
+  }
 }
 
 module.exports = Google
