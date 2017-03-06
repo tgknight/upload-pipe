@@ -47,7 +47,7 @@ class Uploader extends Component {
       directory,
       filename: name
     }))
-    return post('/api/v1/storages/init', { name, directory })
+    return post('/api/v1/storages/init', { name, directory, contentType: file.type })
       .then(response => {
         flow.on('progress', () => {
           this.updateState(Object.assign({}, this.state, {
@@ -93,7 +93,7 @@ class Uploader extends Component {
     return (
       <div>
         Upload a file:<br/><br/>
-        <input type="file" ref="dataFile"/>
+        <input type="file" multiple ref="dataFile"/>
         <button onClick={() => this.initFileUpload()}>Upload</button>
         &nbsp;
         <button onClick={() => this.cancelUpload()}>Cancel Upload</button>

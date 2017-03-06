@@ -14,17 +14,28 @@ class Google {
     this.uploadStream = {}
   }
 
-  initUploadStram(destination, options = {}) {
+  initUploadStram(destination, identifier, options = {}) {
     const file = this.storage.bucket(this.config.bucketName).file(destination)
-    this.uploadStream = file.createWriteStream(options)
+    this.uploadStream[identifier] = file.createWriteStream(options)
   }
 
-  pipeUploadStream(sourceStream) {
-    sourceStream.pipe(this.uploadStream, { end: false })
+  pipeUploadStream(sourceStream, identifier) {
+    sourceStream.pipe(this.uploadStream[identifier], { end: false })
   }
 
-  endUploadStream() {
-    this.uploadStream.end()
+  endUploadStream(identifier) {
+    this.uploadStream[identifier].end()
+    delete this.uploadStream[identifier]
+  }
+
+  getMetadata(remotePath) {
+    const file = this.storage.bucket(this.config.bucketName).file(remotePath)
+    return file.getMetadata()
+  }
+
+  createReadStream(remotePath) {
+    const file = this.storage.bucket(this.config.bucketName).file(remotePath)
+    return file.createReadStream()
   }
 
   existFile(filePath) {
@@ -41,6 +52,8 @@ class Google {
     const file = this.storage.bucket(this.config.bucketName).file(filePath)
     return file.delete()
   }
+
+
 }
 
 module.exports = Google
