@@ -24,9 +24,9 @@ class Main extends Component {
       })
   }
 
-  redirect() {
+  redirect(path) {
     const { origin } = window.location
-    window.location = origin + '/upload'
+    window.location = `${origin}/${path}`
   }
 
   render() {
@@ -36,7 +36,8 @@ class Main extends Component {
         &nbsp;
         Health: {this.state.health}
         <br/><br/>
-        <button onClick={() => this.redirect()}>Go to test upload-pipe</button>
+        <button onClick={() => this.redirect('upload')}>Go to test upload-pipe</button>
+        <button onClick={() => this.redirect('multiupload')}>Go to test multi-upload</button>
       </div>
     )
   }
