@@ -14,7 +14,7 @@ class Google {
     this.uploadStream = {}
   }
 
-  initUploadStram(destination, identifier, options = {}) {
+  initUploadStream(destination, identifier, options = {}) {
     const file = this.storage.bucket(this.config.bucketName).file(destination)
     this.uploadStream[identifier] = file.createWriteStream(options)
   }

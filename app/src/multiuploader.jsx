@@ -7,7 +7,7 @@ import Flow from '../assets/flow'
 import { get, post } from '../utils'
 
 const { hostname, protocol } = window.location
-const target = `${protocol}//${hostname}:9091/api/v1/storages/pipe`
+const target = `${protocol}//${hostname}:9091/api/v1/storages/part`
 let flowOptions = {
   target,
   chunkSize: 1 * 1024 * 1024,
@@ -20,6 +20,7 @@ class MultiUploader extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      status: 'Idle',
       progress: {}
     }
     this.updateState = this.updateState.bind(this)
@@ -31,30 +32,29 @@ class MultiUploader extends Component {
   }
 
   _uploadFile(directory, file, index) {
-    const { name } = file
+    const { name, type } = file
     flows[index] = new Flow(Object.assign({}, flowOptions, {
       query: { directory }
     }))
 
     flows[index].addFile(file)
 
-    return post('/api/v1/storages/open', { name })
+    return post('/api/v1/storages/init', { name, directory, contentType: type })
       .then(response => {
         flows[index].on('progress', () => {
           let uploadingProgress = {}
-          uploadingProgress[name] = flows[index].progress() * 100
+          uploadingProgress[name] = Math.floor(flows[index].progress() * 100)
           let progress = Object.assign({}, this.state.progress, uploadingProgress)
-          this.updateState(Object.assign({}, { progress }))
-          // console.log(`file #${index + 1}: ${flows[index].progress() * 100}`)
+          this.updateState(Object.assign({}, { status: 'Uploading', progress }))
         })
         flows[index].on('complete', () => {
           let finishedProgress = this.state.progress
           delete finishedProgress[name]
           this.updateState({
+            status: finishedProgress.length ? 'Uploading' : 'Idle',
             progress: finishedProgress
           })
-          console.log(`file #${index + 1} complete`)
-          post('/api/v1/storages/close', { name })
+          post('/api/v1/storages/end', { name })
         })
         flows[index].upload()
       })
@@ -68,11 +68,12 @@ class MultiUploader extends Component {
   }
 
   displayProgress() {
-    let uploadingFileList = Object.keys(this.state.progress)
-    let progressString = ''
+    let uploadingFileList = Object.keys(this.state.progress) || []
+    let progressString = []
     for (let file of uploadingFileList) {
-      progressString += `${file}: ${this.state.progress[file]} | `
+      progressString.push(<span key={file}>{file}: {this.state.progress[file]}%<br/></span>)
     }
+
     return progressString
   }
 
@@ -83,7 +84,7 @@ class MultiUploader extends Component {
         <input type="file" multiple ref="dataFile"/>
         <button onClick={() => this.initFileUpload()}>Upload</button>
         <br/><br/>
-        Status: {this.state.status}
+        Status: {this.state.status}<br/>
         {this.state.progress ? this.displayProgress() : ''}
       </div>
     )
