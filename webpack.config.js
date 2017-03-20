@@ -4,8 +4,9 @@ const webpack = require('webpack')
 const ROOT_PATH = path.resolve(__dirname)
 
 module.exports = {
+  devtool: 'inline-source-map',
   entry: [
-    path.resolve(ROOT_PATH, 'app/src/index.jsx')
+    path.resolve(ROOT_PATH, 'app/src/index')
   ],
   module: {
     loaders: [
@@ -26,16 +27,16 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
-  outout: {
+  output: {
     path: path.resolve(ROOT_PATH, 'app/build'),
     publicPath: '/',
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.resolve(ROOT_PATH, 'app/build'),
+    //contentBase: path.resolve(ROOT_PATH, 'app/build'),
     port: 9090,
     historyApiFallback: true,
-    hot: true,
+    // hot: true,
     inline: true,
     progress: true
   },
@@ -43,7 +44,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'Upload-pipe',
-      template: path.resolve(ROOT_PATH, 'app/index.html'),
+      template: path.resolve(ROOT_PATH, 'app/src/index.html'),
       inject: 'body'
     })
   ]
