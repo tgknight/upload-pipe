@@ -19,7 +19,7 @@ class MultiUploader extends Component {
     this.getRemainingFilesList = this.getRemainingFilesList.bind(this)
   }
 
-  componentWillReceiveProps(next) {
+  componentWillReceiveProps(next) { // this should be better, but not it works
     this.setState({
       status: 'Uploading',
       destination: next.destination,
@@ -28,6 +28,8 @@ class MultiUploader extends Component {
     })
     if (!next.uploadingFile.identifier && next.remainingFiles.length > 0) {
       this.props.dequeueUploadFile()
+    }
+    if (next.uploadingFile.identifier && next.uploadingFile.progress === 0) {
       let currentFile = this.fileRefs.shift()
       this.props.uploadFile(this.state.destination, currentFile)
     }
@@ -56,7 +58,7 @@ class MultiUploader extends Component {
   }
 
   getRemainingFilesList() {
-    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => <span key={file}>{file}</span>)
+    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => <span key={file}>{file} </span>)
   }
 
   render() {

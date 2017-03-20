@@ -51,7 +51,6 @@ export function dequeueUploadFile() {
 
 export function uploadFile(directory, file) {
   return dispatch => {
-    console.log(file)
     const { name, type } = file
     flow = new Flow(Object.assign({}, flowOptions, {
       query: { directory }
