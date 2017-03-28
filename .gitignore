@@ -1,4 +1,5 @@
 .DS_STORE
+testfile
 node_modules
 npm-debug.log
 upload
