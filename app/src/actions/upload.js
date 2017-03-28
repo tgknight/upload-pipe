@@ -74,3 +74,26 @@ export function uploadFile(directory, file) {
       })
   }
 }
+
+export const UPLOAD_CANCEL_REQUEST = 'UPLOAD_CANCEL_REQUEST'
+export const UPLOAD_CANCEL_SUCCESS = 'UPLOAD_CANCEL_SUCCESS'
+export const UPLOAD_CANCEL_FAILURE = 'UPLOAD_CANCEL_FAILURE'
+
+export function uploadCancelRequest() {
+  return { type: UPLOAD_CANCEL_REQUEST }
+}
+
+export function uploadCancelSuccess() {
+  return { type: UPLOAD_CANCEL_SUCCESS }
+}
+
+export function uploadCancelFailure() {
+  return { type: UPLOAD_CANCEL_FAILURE }
+}
+
+export function cancelUploadingFile() {
+  return (dispatch, getState) => {
+    const { identifier, dest } = getState().upload.upload
+    console.log(identifier, dest)
+  }
+}

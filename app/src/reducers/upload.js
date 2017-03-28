@@ -11,6 +11,7 @@ const createReducer = (initialState, reducerMap) => {
 
 const initialState = {
   upload: {
+    prevAction: undefined,
     dest: undefined,
     identifier: undefined,
     progress: undefined,
@@ -22,6 +23,7 @@ let actions = {
   [UPLOAD_FILE_REQUEST]: (state, payload) => {
     return Object.assign({}, state, {
       upload: {
+        prevAction: 'request',
         dest: payload.dest,
         progress: 0,
         queue: payload.queue
@@ -34,6 +36,7 @@ let actions = {
 
     return Object.assign({}, state, {
       upload: {
+        prevAction: 'dequeue',
         dest: state.upload.dest,
         identifier: current,
         progress: 0,
@@ -44,6 +47,7 @@ let actions = {
   [UPLOAD_FILE_PROGRESS]: (state, payload) => {
     return Object.assign({}, state, {
       upload: {
+        prevAction: 'progress',
         dest: state.upload.dest,
         identifier: state.upload.identifier,
         progress: payload.progress,
@@ -56,6 +60,7 @@ let actions = {
 
     return Object.assign({}, state, {
       upload: isQueueEmpty ? initialState.upload : {
+        prevAction: 'success',
         dest: state.upload.dest,
         queue: state.upload.queue
       }

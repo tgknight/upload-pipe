@@ -15,6 +15,7 @@ class MultiUploaderPage extends Component {
     return (
       <div>
         <MultiUploader
+          prevAction={this.props.prevAction}
           destination={this.props.destination}
           uploadingFile={this.props.uploadingFile}
           remainingFiles={this.props.remainingFiles}
@@ -22,6 +23,7 @@ class MultiUploaderPage extends Component {
           dequeueUploadFile={() => this.props.dequeueUploadFile()}
           endUploadFile={() => this.props.endUploadFile()}
           uploadFile={(directory, file) => this.props.uploadFile(directory, file)}
+          cancelUploadingFile={() => this.props.cancelUploadingFile()}
         />
       </div>
     )
@@ -29,6 +31,7 @@ class MultiUploaderPage extends Component {
 }
 
 const mapStateToProps = state => ({
+  prevAction: state.upload.upload.prevAction,
   destination: state.upload.upload.dest,
   uploadingFile: {
     identifier: state.upload.upload.identifier,
