@@ -108,3 +108,36 @@ export function cancelUploadingFile() {
       })
   }
 }
+
+export const REMOVE_FROM_QUEUE_REQUEST = 'REMOVE_FROM_QUEUE_REQUEST'
+export const REMOVE_FROM_QUEUE_SUCCESS = 'REMOVE_FROM_QUEUE_SUCCESS'
+export const REMOVE_FROM_QUEUE_FAILURE = 'REMOVE_FROM_QUEUE_FAILURE'
+
+export function removeFromQueueRequest() {
+  return { type: REMOVE_FROM_QUEUE_REQUEST }
+}
+
+export function removeFromQueueSuccess(queue) {
+  return {
+    type: REMOVE_FROM_QUEUE_SUCCESS,
+    payload: { queue }
+  }
+}
+
+export function removeFromQueueFailure() {
+  return { type: REMOVE_FROM_QUEUE_FAILURE }
+}
+
+export function removeFromQueue(identifier) {
+   return (dispatch, getState) => {
+     const { queue } = getState().upload.upload
+     const identifierIndex = queue.indexOf(identifier)
+
+     dispatch(removeFromQueueRequest())
+     if (identifierIndex > -1) {
+       dispatch(removeFromQueueSuccess(queue.filter(item => item !== identifier)))
+     } else {
+       dispatch(removeFromQueueFailure())
+     }
+   }
+}

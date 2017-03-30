@@ -54,6 +54,11 @@ class MultiUploader extends Component {
     this.props.initUploadProcess(directory, this._getFileIdentifier(files))
   }
 
+  removeFromQueue(identifier) {
+    this.fileRefs = this.fileRefs.filter(file => file.name !== identifier)
+    this.props.removeFromQueue(identifier)
+  }
+
   getUploadingFileProgress() {
     let { identifier, progress } = this.state.uploadingFile
     return this._isStatusIdle() ? 'Idle' : (
@@ -65,7 +70,13 @@ class MultiUploader extends Component {
   }
 
   getRemainingFilesList() {
-    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => <span key={file}>{file} </span>)
+    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => (
+      <span key={file}>
+        {file}$nbsp;
+        <button onClick={() => this.removeFromQueue(file)}>Cancel</button>
+        &nbsp;
+      </span>
+    ))
   }
 
   render() {

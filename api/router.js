@@ -68,6 +68,7 @@ router.post('/api/v1/storages/end', function* () {
 
 router.post('/api/v1/storages/cancel', function* () {
   const { name, directory } = yield parse.json(this)
+  console.log('cancel')
   google.endUploadStream(name)
   let exist = false
   while (!(exist = yield google.existFile(entryPoint + directory + name))) {}

@@ -24,6 +24,7 @@ class MultiUploaderPage extends Component {
           endUploadFile={() => this.props.endUploadFile()}
           uploadFile={(directory, file) => this.props.uploadFile(directory, file)}
           cancelUploadingFile={() => this.props.cancelUploadingFile()}
+          removeFromQueue={(identifier) => this.props.removeFromQueue(identifier)}
         />
       </div>
     )
