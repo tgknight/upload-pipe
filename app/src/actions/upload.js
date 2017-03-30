@@ -12,7 +12,7 @@ const flowOptions = {
   simultaneousUploads: 1
 }
 
-let flow = {}
+let flow = undefined
 
 export const UPLOAD_FILE_REQUEST = 'UPLOAD_FILE_REQUEST'
 export const UPLOAD_FILE_DEQUEUE = 'UPLOAD_FILE_DEQUEUE'
@@ -94,6 +94,17 @@ export function uploadCancelFailure() {
 export function cancelUploadingFile() {
   return (dispatch, getState) => {
     const { identifier, dest } = getState().upload.upload
-    console.log(identifier, dest)
+
+    flow.pause()
+    dispatch(uploadCancelRequest())
+    return post('/api/v1/storages/cancel', { name: identifier, directory: dest })
+      .then(response => {
+        flow.off()
+        dispatch(uploadCancelSuccess())
+      })
+      .catch(err => {
+        dispatch(uploadCancelFailure())
+        flow.resume()
+      })
   }
 }

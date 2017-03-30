@@ -1,6 +1,9 @@
 'use strict'
 
-import { UPLOAD_FILE_REQUEST, UPLOAD_FILE_DEQUEUE, UPLOAD_FILE_PROGRESS, UPLOAD_FILE_SUCCESS } from '../actions/upload'
+import {
+  UPLOAD_FILE_REQUEST, UPLOAD_FILE_DEQUEUE, UPLOAD_FILE_PROGRESS, UPLOAD_FILE_SUCCESS,
+  UPLOAD_CANCEL_REQUEST, UPLOAD_CANCEL_SUCCESS, UPLOAD_CANCEL_FAILURE
+} from '../actions/upload'
 
 const createReducer = (initialState, reducerMap) => {
   return (state = initialState, action) => {
@@ -62,6 +65,39 @@ let actions = {
       upload: isQueueEmpty ? initialState.upload : {
         prevAction: 'success',
         dest: state.upload.dest,
+        queue: state.upload.queue
+      }
+    })
+  },
+  [UPLOAD_CANCEL_REQUEST]: (state, payload) => {
+    return Object.assign({}, state, {
+      upload: {
+        prevAction: 'cancelRequest',
+        dest: state.upload.dest,
+        identifier: state.upload.identifier,
+        progress: state.upload.progress,
+        queue: state.upload.queue
+      }
+    })
+  },
+  [UPLOAD_CANCEL_SUCCESS]: (state, payload) => {
+    return Object.assign({}, state, {
+      upload: {
+        prevAction: 'cancelSuccess',
+        dest: state.upload.dest,
+        identifier: undefined,
+        progress: 0,
+        queue: state.upload.queue
+      }
+    })
+  },
+  [UPLOAD_CANCEL_FAILURE]: (state, payload) => {
+    return Object.assign({}, state, {
+      upload: {
+        prevAction: 'cancelFailure',
+        dest: state.upload.dest,
+        identifier: state.upload.identifier,
+        progress: state.upload.progress,
         queue: state.upload.queue
       }
     })
