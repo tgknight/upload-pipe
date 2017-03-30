@@ -11,6 +11,7 @@ class MultiUploader extends Component {
       uploadingFile: this.props.uploadingFile,
       remainingFiles: this.props.remainingFiles
     }
+    this.fileRefs = []
 
     this._isStatusIdle = this._isStatusIdle.bind(this)
     this.initUploadProcess = this.initUploadProcess.bind(this)
@@ -25,11 +26,14 @@ class MultiUploader extends Component {
       uploadingFile: next.uploadingFile,
       remainingFiles: next.remainingFiles
     })
-    if (next.prevAction === 'request' || (next.prevAction === 'success' && next.remainingFiles.length > 0)) {
+    if (next.prevAction === 'request' ||
+      ((next.prevAction === 'success' || next.prevAction === 'cancelSuccess') &&
+      next.remainingFiles.length > 0)
+    ) {
       this.props.dequeueUploadFile()
     }
     if (next.prevAction === 'dequeue') {
-      this.props.uploadFile(this.state.destination, next.uploadingFile.identifier)
+      this.props.uploadFile(this.state.destination, this.fileRefs.shift())
     }
   }
 
@@ -41,22 +45,27 @@ class MultiUploader extends Component {
     return Array.from(files)
   }
 
+  _getFileIdentifier(files) {
+    return Array.from(files).map(file => file.name)
+  }
+
   initUploadProcess(directory, files) {
-    this.props.initUploadProcess(directory, this._getFileList(files))
+    this.fileRefs = this._getFileList(files)
+    this.props.initUploadProcess(directory, this._getFileIdentifier(files))
   }
 
   getUploadingFileProgress() {
     let { identifier, progress } = this.state.uploadingFile
     return this._isStatusIdle() ? 'Idle' : (
       <span>
-        Uploading {identifier.name} - {progress}%&nbsp;
+        Uploading {identifier} - {progress}%&nbsp;
         <button onClick = {() => this.props.cancelUploadingFile()}>Cancel</button>
       </span>
     )
   }
 
   getRemainingFilesList() {
-    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => <span key={file.name}>{file.name} </span>)
+    return this._isStatusIdle() ? '' : this.state.remainingFiles.map(file => <span key={file}>{file} </span>)
   }
 
   render() {
