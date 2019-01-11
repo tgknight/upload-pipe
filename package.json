@@ -62,6 +62,6 @@
   "devDependencies": {
     "babel-preset-react-hmre": "^1.1.1",
     "html-webpack-plugin": "^2.22.0",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-dev-server": "^3.1.11"
   }
 }
